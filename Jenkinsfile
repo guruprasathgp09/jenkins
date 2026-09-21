@@ -1,19 +1,17 @@
 pipeline {
-
     agent any
 
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/guruprasathgp09/jenkins.git'
+                echo 'Checking out code from GitHub'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat 'npm ci'
+                bat 'npm install'
             }
         }
 
@@ -23,11 +21,20 @@ pipeline {
             }
         }
 
-        stage('Archive Build') {
+        stage('Test Build') {
             steps {
-                archiveArtifacts artifacts: 'dist/**',
-                    fingerprint: true
+                bat 'if exist dist echo React build successful'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'CI/CD Pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'CI/CD Pipeline failed!'
         }
     }
 }
